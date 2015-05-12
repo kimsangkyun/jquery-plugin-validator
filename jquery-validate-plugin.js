@@ -4,7 +4,7 @@
  * @Date   : 2015. 4. 3
  */
 (function(){
-	
+
 	var stop = (function() {
 		var _validate;
 		var setValidate = function(validateBoolean) {
@@ -81,30 +81,62 @@
 			var validArr = valid.split(',');
 			var validLength = validArr.length;
 			var minLength = tagValid.attr('minLength');
+			var valueTrim = $.trim(tagValid.val());
+			var i;
 			
-			for (var i = 0; i < validLength; i++) {
+			if (valid.indexOf('require') >= 0) {
+			  makeFirstRequire(validArr, validLength);
+			}
+			
+			for (i = 0; i < validLength; i++) {
 				
 				if (minLength > tagValid.val().length) {
 					simpleAlert(tagValid, "이 지정된 길이 " + minLength + "보다 짧습니다.");
-					stop.setValidate(false);
 					return;
 				}
 				
-				if (valid === 'require') {
-					if(valueTrim === '' || valueTrim === null || valueTrim.length === 0) {
-						simpleAlert(tagValid, message.require);
-						return;
-					}
+				if (validArr[i] === 'require') {
+				  
+				  if(!isCheckNull(valueTrim)) {
+			      simpleAlert(tagValid, message.require);
+			      return;
+			    }
+				  
+				} else {
+				  
+				  if(isCheckNull(valueTrim)) {
+				    regCheck(regExp[validArr[i]], tagValid, message[validArr[i]]);
+			    }
+				  
 				}
 				
-				regCheck(regExp[validArr[i]], tagValid, message[validArr[i]]);
 			}//for valid속성에 값이 하나만 들어가지만 혹시나 나중에 몇가지를 넣을수 있는 상황이 생길수도 있어서 반복문
+	}
+	
+	var isCheckNull = function(valueTrim) {
+	  if(valueTrim === '' || valueTrim === null || valueTrim.length === 0) {
+      return false
+    }
+	  return true;
+	}
+	
+	var makeFirstRequire = function(validArr, validLength) {
+		var imsiValid;
+		
+		for (i = 0; i < validLength; i++) {
+			if (validArr[i] == 'require') {
+				imsiValid = validArr[0];
+				validArr[0] = validArr[i];
+				validArr[i] = imsiValid;
+			}
+		}
 	}
 	
 	var simpleAlert = function(tagValid, message) {
 		tagValid = $(tagValid);
 		alert(getLabelName(tagValid.attr('id')) + message);
 		tagValid.focus();
+		stop.setValidate(false);
 	}
 	
 	var getLabelName = function(id) {
@@ -119,7 +151,6 @@
 
 			if(!pattern.test(tagValidTrim)) {
 				simpleAlert(tagValid, "에는 " + message);
-				stop.setValidate(false);
 			}
 	}
 	
