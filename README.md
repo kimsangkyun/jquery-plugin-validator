@@ -1,7 +1,7 @@
 	<html>
 	<head>
 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-  	<script src="~~~"></script>
+  	<script src="jquery-validate-plugin.js"></script>
 	</head>
 	<body>
 		<form id="frm" action="haha.html">
