@@ -3,7 +3,7 @@
  * @author : ksk1004zz
  * @Date   : 2015. 4. 3
  */
-(function(){
+(function($){
 
 	var stop = (function() {
 		var _validate;
@@ -21,10 +21,15 @@
 		};
 	})();
 	
+	
+	var SHORTER_SIZE = "이 지정된 길이 #{minLength} 보다 짧습니다."
+	var SUBJECT_SUPPORT = "에는"; 
+	
 	var koreanReg = /(^[가-힣ㄱ-ㅎㅏ-ㅣ\\x20])/i;;//한국어
 	var kAndEReg = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z]+$/;;//한국어영어
 	var kNotReg = /[^가-힣ㄱ-ㅎㅏ-ㅣ]/;;//한국어만 아닌거
-	var regExp = {
+	
+	var REGEXP = {
 		mp : '^\\d{3}-\\d{3,4}-\\d{4}$',//핸드폰
 		ln : '^\\d{3}-\\d{2}-\\d{5}$',//사업자등록번호
 		hp : '^\\d{2,3}-\\d{3,4}-\\d{4}$',//집번호
@@ -37,8 +42,10 @@
 		number : '^[0-9]*$',//숫자
 		email : '[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?'
 	}
+	
+	
 	//이메일
-	var message = {
+	var MESSAGE = {
 		email : '이메일만 입력 가능 합니다.',
 		mp : '핸드폰 번호만 입력 가능 합니다.',
 		hp : '집 혹은 팩스 번호 형식이 아닙니다.',
@@ -91,26 +98,26 @@
 			for (i = 0; i < validLength; i++) {
 				
 				if (minLength > tagValid.val().length) {
-					simpleAlert(tagValid, "이 지정된 길이 " + minLength + "보다 짧습니다.");
+					simpleAlert(tagValid, SHORTER_SIZE.replace("#{minLength}", minLength));
 					return;
 				}
 				
 				if (validArr[i] === 'require') {
 				  
 				  if(!isCheckNull(valueTrim)) {
-			      simpleAlert(tagValid, message.require);
+			      simpleAlert(tagValid, MESSAGE.require);
 			      return;
 			    }
 				  
 				} else {
 				  
 				  if(isCheckNull(valueTrim)) {
-				    regCheck(regExp[validArr[i]], tagValid, message[validArr[i]]);
+				    regCheck(REGEXP[validArr[i]], tagValid, MESSAGE[validArr[i]]);
 			    }
 				  
 				}
 				
-			}//for valid속성에 값이 하나만 들어가지만 혹시나 나중에 몇가지를 넣을수 있는 상황이 생길수도 있어서 반복문
+			}
 	}
 	
 	var isCheckNull = function(valueTrim) {
@@ -150,7 +157,7 @@
 			tagValid.val(tagValidTrim);
 
 			if(!pattern.test(tagValidTrim)) {
-				simpleAlert(tagValid, "에는 " + message);
+				simpleAlert(tagValid, SUBJECT_SUPPORT + message);
 			}
 	}
 	
